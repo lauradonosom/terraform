@@ -9,8 +9,8 @@ resource "azurerm_resource_group" "development" {
 #NETWORK SECURITY GROUP
 resource "azurerm_network_security_group" "development" {
   name                = "nsgdevelopment"
-  location            = "${azurerm_resource_group.development.location}"
-  resource_group_name = "${azurerm_resource_group.development.name}"
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group}"
 
   security_rule {
     name                       = "test123"
@@ -31,21 +31,21 @@ resource "azurerm_network_security_group" "development" {
 resource "azurerm_virtual_network" "development" {
     name  = "developmentNetwork"
     address_space = ["10.0.0.0/16"]
-    location = "${azurerm_resource_group.development.location}"
-    resource_group_name = "${azurerm_resource_group.development.name}"
+    location = "${var.location}"
+    resource_group_name = "${var.resource_group}"
 }
 
 resource "azurerm_public_ip" "development" {
   name                         = "IPtest"
-  location                     = "${azurerm_resource_group.development.location}"
-  resource_group_name          = "${azurerm_resource_group.development.name}"
+  location                     = "${var.location}"
+  resource_group_name          = "${var.resource_group}"
   public_ip_address_allocation = "static"
 }
 
 
 resource "azurerm_subnet" "development" {
  name                 = "subnet1"
- resource_group_name  = "${azurerm_resource_group.development.name}"
+ resource_group_name  = "${var.resource_group}"
  virtual_network_name = "${azurerm_virtual_network.development.name}"
  address_prefix       = "10.0.2.0/24"
 }
@@ -54,8 +54,8 @@ resource "azurerm_subnet" "development" {
 #LOAD BALANCER
 resource "azurerm_lb" "development" {
   name                = "lbdevelopment"
-  location            = "${azurerm_resource_group.development.location}"
-  resource_group_name = "${azurerm_resource_group.development.name}"
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group}"
 
   frontend_ip_configuration {
     name                 = "PublicIPAddress"
@@ -65,7 +65,7 @@ resource "azurerm_lb" "development" {
 
 #BACKEND ADDRESS POOL
 resource "azurerm_lb_backend_address_pool" "bpepool" {
-  resource_group_name = "${azurerm_resource_group.development.name}"
+  resource_group_name = "${var.resource_group}"
   loadbalancer_id     = "${azurerm_lb.development.id}"
   name                = "BackEndAddressPool"
 }
@@ -73,7 +73,7 @@ resource "azurerm_lb_backend_address_pool" "bpepool" {
 #INBOUND NATPOOL RULES
 resource "azurerm_lb_nat_pool" "lbnatpool" {
   count                          = 3
-  resource_group_name            = "${azurerm_resource_group.development.name}"
+  resource_group_name            = "${var.resource_group}"
   name                           = "ssh"
   loadbalancer_id                = "${azurerm_lb.development.id}"
   protocol                       = "Tcp"
@@ -88,8 +88,8 @@ resource "azurerm_lb_nat_pool" "lbnatpool" {
 #VMSCALE SET
 resource "azurerm_virtual_machine_scale_set" "development" {
   name                = "tfscaleset"
-  location            = "${azurerm_resource_group.development.location}"
-  resource_group_name = "${azurerm_resource_group.development.name}"
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group}"
   upgrade_policy_mode = "Manual"
 
   sku {
@@ -143,14 +143,14 @@ resource "azurerm_virtual_machine_scale_set" "development" {
 #dns zone
 resource "azurerm_dns_zone" "dnspublic" {
  name  = "trfdns.com"
- resource_group_name = "${azurerm_resource_group.development.name}"
+ resource_group_name = "${var.resource_group}"
   zone_type ="Public"
   
 }
 
 resource "azurerm_dns_zone" "dnsprivate" {
  name  = "trfdns.com"
-  resource_group_name = "${azurerm_resource_group.development.name}"
+  resource_group_name = "${var.resource_group}"
   zone_type ="Private"
   
 }
@@ -158,8 +158,8 @@ resource "azurerm_dns_zone" "dnsprivate" {
 #DATABASE
 resource "azurerm_mysql_server" "db" {
   name                = "myazuresqlserver2"
-  location            = "${azurerm_resource_group.development.location}"
-  resource_group_name = "${azurerm_resource_group.development.name}"
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group}"
   
   sku {
     name = "B_Gen4_1"
@@ -182,7 +182,7 @@ resource "azurerm_mysql_server" "db" {
 
 resource "azurerm_mysql_database" "db" {
   name                = "testdb"
-  resource_group_name = "${azurerm_resource_group.development.name}"
+  resource_group_name = "${var.resource_group}"
   server_name         = "${azurerm_mysql_server.db.name}"
   charset             = "utf8"
   collation           = "utf8_unicode_ci"
