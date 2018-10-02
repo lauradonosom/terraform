@@ -24,6 +24,17 @@ resource "azurerm_network_security_group" "development" {
     destination_address_prefix = "*"
   }
 
+  security_rule {
+    name                       = "allowport443"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefixes    = ["190.248.23.200/29","200.31.15.232/29"]
+    destination_address_prefix = "*"
+  }
   
 }
 
@@ -140,20 +151,21 @@ resource "azurerm_virtual_machine_scale_set" "development" {
   
 }
 
-#dns zone
-resource "azurerm_dns_zone" "dnspublic" {
- name  = "trfdns.com"
- resource_group_name = "${var.resource_group}"
-  zone_type ="Public"
-  
-}
 
-resource "azurerm_dns_zone" "dnsprivate" {
- name  = "trfdns.com"
-  resource_group_name = "${var.resource_group}"
-  zone_type ="Private"
+#dns zone
+#resource "azurerm_dns_zone" "dnspublic" {
+# name  = "trfdns.com"
+# resource_group_name = "${var.resource_group}"
+#  zone_type ="Public"
   
-}
+#}
+
+#resource "azurerm_dns_zone" "dnsprivate" {
+# name  = "trfdns.com"
+#  resource_group_name = "${var.resource_group}"
+#  zone_type ="Private"
+  
+#}
 
 #DATABASE
 resource "azurerm_mysql_server" "db" {

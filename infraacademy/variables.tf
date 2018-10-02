@@ -5,5 +5,5 @@ variable "resource_group" {
 
 variable "location" {
   description = "southcentralus"
-  default     = "eastus"
+  default     = "southcentralus"
 }
