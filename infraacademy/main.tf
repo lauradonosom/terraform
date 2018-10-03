@@ -152,20 +152,20 @@ resource "azurerm_virtual_machine_scale_set" "development" {
 }
 
 
-#dns zone
-#resource "azurerm_dns_zone" "dnspublic" {
-# name  = "trfdns.com"
-# resource_group_name = "${var.resource_group}"
-#  zone_type ="Public"
+dns zone
+resource "azurerm_dns_zone" "dnspublic" {
+ name  = "trfdns.com"
+ resource_group_name = "${var.resource_group}"
+ zone_type ="Public"
   
-#}
+}
 
-#resource "azurerm_dns_zone" "dnsprivate" {
-# name  = "trfdns.com"
-#  resource_group_name = "${var.resource_group}"
-#  zone_type ="Private"
+resource "azurerm_dns_zone" "dnsprivate" {
+ name  = "trfdns.com"
+  resource_group_name = "${var.resource_group}"
+  zone_type ="Private"
   
-#}
+}
 
 #DATABASE
 resource "azurerm_mysql_server" "db" {
